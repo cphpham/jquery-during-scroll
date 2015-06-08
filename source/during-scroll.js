@@ -6,7 +6,7 @@
    * @returns {Number} - a reference to the interval invoked.
    */
   function duringScroll(opts) {
-    var top_offset = document.body.scrollTop,
+    var top_offset = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop,
         state = 'not scrolling',
         noop = function() {},
         default_options = {
@@ -19,18 +19,16 @@
         options = merge_hashes(default_options, opts);
 
     function handle_scrolling(scrollStart, duringScroll, afterScroll) {
-      if(state === 'not scrolling' && top_offset !== document.body.scrollTop) {
+      if(state === 'not scrolling' && top_offset !== (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop) {
         // we've started scrolling
-        top_offset = document.body.scrollTop;
+        top_offset = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
         state = 'scrolling';
         scrollStart();
-
-      } else if(state === 'scrolling' && top_offset !== document.body.scrollTop) {
+      } else if(state === 'scrolling' && top_offset !== (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop) {
         // we're still scrolling
-        top_offset = document.body.scrollTop;
+        top_offset = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
         duringScroll();
-
-      } else if(state === 'scrolling' && top_offset === document.body.scrollTop) {
+      } else if(state === 'scrolling' && top_offset === (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop) {
         // we've stopped scrolling
         state = 'not scrolling';
         afterScroll();
